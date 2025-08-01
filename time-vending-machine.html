@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ Time Vending Machine - Pay with Minutes, Not Money</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .machine-container {
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 2px solid #1abc9c;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .machine-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .machine-title {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #1abc9c, #16a085);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .machine-subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .time-wallet {
+            background: rgba(26, 188, 156, 0.2);
+            border: 2px solid #1abc9c;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .time-balance {
+            font-size: 1.8rem;
+            color: #1abc9c;
+            font-weight: bold;
+        }
+
+        .time-label {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .vending-display {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 3px solid #2c3e50;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .vending-item {
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vending-item:hover {
+            transform: translateY(-3px);
+            border-color: #1abc9c;
+            box-shadow: 0 10px 25px rgba(26, 188, 156, 0.3);
+        }
+
+        .vending-item.selected {
+            border-color: #e74c3c;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+        }
+
+        .vending-item.dispensing {
+            animation: dispense 2s ease-in-out;
+        }
+
+        @keyframes dispense {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(-10px) rotateZ(-2deg); }
+            50% { transform: translateY(5px) rotateZ(2deg); }
+            75% { transform: translateY(-5px) rotateZ(-1deg); }
+            100% { transform: translateY(0) rotateZ(0deg); }
+        }
+
+        .item-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .item-name {
+            font-size: 0.9rem;
+            color: #ecf0f1;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .item-cost {
+            color: #1abc9c;
+            font-size: 0.8rem;
+            background: rgba(26, 188, 156, 0.2);
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .item-stock {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-section {
+            background: rgba(52, 73, 94, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .selected-item {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(26, 188, 156, 0.1);
+            border-radius: 10px;
+            border: 1px solid #1abc9c;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .payment-method:hover {
+            border-color: #1abc9c;
+            transform: translateY(-2px);
+        }
+
+        .payment-method.active {
+            border-color: #e74c3c;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+        }
+
+        .method-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .method-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .countdown-timer {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px solid #e74c3c;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 10px;
+            background: rgba(231, 76, 60, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #1abc9c, #16a085);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-cancel {
+            background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+        }
+
+        .inventory {
+            background: rgba(52, 73, 94, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .inventory-title {
+            color: #1abc9c;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .inventory-item {
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid #1abc9c;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(145deg, #27ae60, #229954);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .task-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .task-content {
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid #1abc9c;
+        }
+
+        .click-game {
+            margin: 20px 0;
+        }
+
+        .click-target {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.1s ease;
+        }
+
+        .click-target:hover {
+            transform: scale(1.1);
+        }
+
+        .click-target:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .machine-container {
+                padding: 20px;
+            }
+            
+            .machine-title {
+                font-size: 2rem;
+            }
+            
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .timer-display {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="machine-container">
+        <div class="machine-header">
+            <h1 class="machine-title">⏰ TIME VENDING MACHINE</h1>
+            <p class="machine-subtitle">Pay with Minutes, Not Money • Your Time is Your Currency</p>
+        </div>
+
+        <div class="time-wallet">
+            <div class="time-balance" id="timeSpent">00:00:00</div>
+            <div class="time-label">Total Time Invested</div>
+        </div>
+
+        <div class="vending-display">
+            <div class="items-grid" id="itemsGrid">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="payment-section" id="paymentSection" style="display: none;">
+            <div class="selected-item" id="selectedItem">
+                <!-- Selected item details -->
+            </div>
+
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPaymentMethod('wait')">
+                    <div class="method-icon">⏳</div>
+                    <div class="method-name">Patient Wait</div>
+                    <div style="font-size: 0.8rem; color: #bdc3c7; margin-top: 5px;">Just wait and contemplate</div>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('click')">
+                    <div class="method-icon">🎯</div>
+                    <div class="method-name">Click Challenge</div>
+                    <div style="font-size: 0.8rem; color: #bdc3c7; margin-top: 5px;">Prove your dedication</div>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('focus')">
+                    <div class="method-icon">🧘</div>
+                    <div class="method-name">Mindful Focus</div>
+                    <div style="font-size: 0.8rem; color: #bdc3c7; margin-top: 5px;">Stay present and focused</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="startPayment()" id="payBtn">Start Payment</button>
+                <button class="btn btn-cancel" onclick="cancelSelection()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="countdown-timer" id="countdownTimer" style="display: none;">
+            <div class="timer-display" id="timerDisplay">05:00</div>
+            <div class="timer-progress">
+                <div class="timer-fill" id="timerFill"></div>
+            </div>
+            <div id="paymentInstructions">Please wait patiently...</div>
+            <div class="action-buttons" style="margin-top: 15px;">
+                <button class="btn btn-cancel" onclick="cancelPayment()">Cancel Payment</button>
+            </div>
+        </div>
+
+        <div class="inventory">
+            <div class="inventory-title">🎒 Your Digital Collection</div>
+            <div class="inventory-items" id="inventoryItems">
+                <div style="color: #7f8c8d; font-style: italic;">No items yet - start shopping with your time!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Overlay -->
+    <div class="task-overlay" id="taskOverlay">
+        <div class="task-content">
+            <h3 id="taskTitle">Click Challenge</h3>
+            <p id="taskDescription">Click the target 50 times to pay with your time and attention!</p>
+            <div class="click-game">
+                <div class="click-target" id="clickTarget" onclick="handleClick()">🎯</div>
+                <div>Clicks: <span id="clickCount">0</span> / <span id="clickGoal">50</span></div>
+            </div>
+            <button class="btn btn-cancel" onclick="cancelTask()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Game state
+        let selectedItem = null;
+        let selectedPaymentMethod = null;
+        let totalTimeSpent = 0;
+        let paymentTimer = null;
+        let paymentStartTime = 0;
+        let userInventory = [];
+        let clickCount = 0;
+        let clickGoal = 0;
+
+        // Virtual items with time costs (in seconds)
+        const vendingItems = [
+            { id: 1, name: "Digital Wallpaper", icon: "🖼️", cost: 30, stock: 5, description: "Beautiful HD wallpaper" },
+            { id: 2, name: "Meditation Track", icon: "🎵", cost: 120, stock: 3, description: "5-minute guided meditation" },
+            { id: 3, name: "Motivational Quote", icon: "💫", cost: 60, stock: 10, description: "Daily inspiration" },
+            { id: 4, name: "Digital Pet", icon: "🐱", cost: 300, stock: 2, description: "Virtual companion" },
+            { id: 5, name: "Time Badge", icon: "🏆", cost: 180, stock: 5, description: "Achievement unlock" },
+            { id: 6, name: "Focus Timer", icon: "⏲️", cost: 90, stock: 7, description: "Productivity tool" },
+            { id: 7, name: "Mini Game", icon: "🎮", cost: 240, stock: 4, description: "Time-killer game" },
+            { id: 8, name: "Wisdom Scroll", icon: "📜", cost: 150, stock: 6, description: "Ancient knowledge" },
+            { id: 9, name: "Memory Palace", icon: "🏰", cost: 420, stock: 1, description: "Mind enhancement" },
+            { id: 10, name: "Time Crystal", icon: "💎", cost: 600, stock: 1, description: "Rare temporal artifact" }
+        ];
+
+        // Initialize the vending machine
+        function initVendingMachine() {
+            renderItems();
+            updateTimeDisplay();
+            loadInventory();
+        }
+
+        function renderItems() {
+            const grid = document.getElementById('itemsGrid');
+            grid.innerHTML = vendingItems.map(item => `
+                <div class="vending-item" onclick="selectItem(${item.id})">
+                    <div class="item-stock">${item.stock}</div>
+                    <div class="item-icon">${item.icon}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-cost">${formatTime(item.cost * 1000)}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectItem(itemId) {
+            const item = vendingItems.find(i => i.id === itemId);
+            if (!item || item.stock === 0) {
+                showNotification("Item out of stock!");
+                return;
+            }
+
+            selectedItem = item;
+            
+            // Clear previous selections
+            document.querySelectorAll('.vending-item').forEach(el => el.classList.remove('selected'));
+            event.target.closest('.vending-item').classList.add('selected');
+
+            // Show payment section
+            document.getElementById('selectedItem').innerHTML = `
+                <h3>${item.icon} ${item.name}</h3>
+                <p style="color: #bdc3c7; margin: 10px 0;">${item.description}</p>
+                <div style="font-size: 1.2rem; color: #e74c3c;">
+                    <strong>Cost: ${formatTime(item.cost * 1000)}</strong>
+                </div>
+            `;
+            
+            document.getElementById('paymentSection').style.display = 'block';
+            document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Clear previous selections
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('active'));
+            event.target.closest('.payment-method').classList.add('active');
+        }
+
+        function startPayment() {
+            if (!selectedItem || !selectedPaymentMethod) {
+                showNotification("Please select an item and payment method!");
+                return;
+            }
+
+            paymentStartTime = Date.now();
+            
+            switch (selectedPaymentMethod) {
+                case 'wait':
+                    startWaitPayment();
+                    break;
+                case 'click':
+                    startClickPayment();
+                    break;
+                case 'focus':
+                    startFocusPayment();
+                    break;
+            }
+        }
+
+        function startWaitPayment() {
+            document.getElementById('paymentSection').style.display = 'none';
+            document.getElementById('countdownTimer').style.display = 'block';
+            document.getElementById('paymentInstructions').textContent = 'Please wait patiently. No clicking, no distractions...';
+            
+            startCountdown(selectedItem.cost);
+        }
+
+        function startClickPayment() {
+            clickCount = 0;
+            clickGoal = Math.max(10, Math.floor(selectedItem.cost / 6)); // Roughly 6 seconds per 10 clicks
+            
+            document.getElementById('taskTitle').textContent = 'Click Challenge';
+            document.getElementById('taskDescription').textContent = `Click the target ${clickGoal} times to pay with your focused attention!`;
+            document.getElementById('clickCount').textContent = '0';
+            document.getElementById('clickGoal').textContent = clickGoal;
+            document.getElementById('taskOverlay').style.display = 'flex';
+        }
+
+        function startFocusPayment() {
+            document.getElementById('paymentSection').style.display = 'none';
+            document.getElementById('countdownTimer').style.display = 'block';
+            document.getElementById('paymentInstructions').innerHTML = `
+                <div style="margin-bottom: 15px;">Stay focused on this circle. Don't look away!</div>
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(45deg, #1abc9c, #16a085); margin: 0 auto; animation: pulse 2s infinite;"></div>
+                <style>
+                @keyframes pulse {
+                    0% { transform: scale(1); opacity: 1; }
+                    50% { transform: scale(1.1); opacity: 0.7; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                </style>
+            `;
+            
+            startCountdown(selectedItem.cost);
+        }
+
+        function startCountdown(seconds) {
+            let timeLeft = seconds;
+            const totalTime = seconds;
+            
+            function updateTimer() {
+                const minutes = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                document.getElementById('timerDisplay').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                const progress = ((totalTime - timeLeft) / totalTime) * 100;
+                document.getElementById('timerFill').style.width = `${progress}%`;
+                
+                if (timeLeft <= 0) {
+                    completePayment();
+                    return;
+                }
+                
+                timeLeft--;
+                paymentTimer = setTimeout(updateTimer, 1000);
+            }
+            
+            updateTimer();
+        }
+
+        function handleClick() {
+            clickCount++;
+            document.getElementById('clickCount').textContent = clickCount;
+            
+            // Visual feedback
+            const target = document.getElementById('clickTarget');
+            target.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                target.style.transform = 'scale(1)';
+            }, 100);
+            
+            if (clickCount >= clickGoal) {
+                setTimeout(() => {
+                    completePayment();
+                    document.getElementById('taskOverlay').style.display = 'none';
+                }, 500);
+            }
+        }
+
+        function completePayment() {
+            if (paymentTimer) clearTimeout(paymentTimer);
+            
+            const timeSpent = Math.floor((Date.now() - paymentStartTime) / 1000);
+            totalTimeSpent += Math.max(timeSpent, selectedItem.cost);
+            
+            // Add item to inventory
+            userInventory.push({
+                ...selectedItem,
+                purchasedAt: new Date(),
+                timePaid: Math.max(timeSpent, selectedItem.cost)
+            });
+            
+            // Reduce stock
+            selectedItem.stock--;
+            
+            // Animate item dispensing
+            const itemElements = document.querySelectorAll('.vending-item');
+            itemElements.forEach(el => {
+                if (el.classList.contains('selected')) {
+                    el.classList.add('dispensing');
+                }
+            });
+            
+            // Show success notification
+            showNotification(`🎉 You received: ${selectedItem.name}! Time well spent!`);
+            
+            // Update displays
+            setTimeout(() => {
+                renderItems();
+                updateInventory();
+                updateTimeDisplay();
+                resetPaymentUI();
+            }, 2000);
+        }
+
+        function cancelPayment() {
+            if (paymentTimer) clearTimeout(paymentTimer);
+            resetPaymentUI();
+            showNotification("Payment cancelled");
+        }
+
+        function cancelTask() {
+            document.getElementById('taskOverlay').style.display = 'none';
+            resetPaymentUI();
+            showNotification("Task cancelled");
+        }
+
+        function cancelSelection() {
+            selectedItem = null;
+            selectedPaymentMethod = null;
+            document.querySelectorAll('.vending-item').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('active'));
+            resetPaymentUI();
+        }
+
+        function resetPaymentUI() {
+            document.getElementById('paymentSection').style.display = 'none';
+            document.getElementById('countdownTimer').style.display = 'none';
+            selectedItem = null;
+            selectedPaymentMethod = null;
+        }
+
+        function updateTimeDisplay() {
+            document.getElementById('timeSpent').textContent = formatTime(totalTimeSpent * 1000);
+        }
+
+        function updateInventory() {
+            const container = document.getElementById('inventoryItems');
+            if (userInventory.length === 0) {
+                container.innerHTML = '<div style="color: #7f8c8d; font-style: italic;">No items yet - start shopping with your time!</div>';
+            } else {
+                container.innerHTML = userInventory.map(item => 
+                    `<div class="inventory-item">${item.icon} ${item.name}</div>`
+                ).join('');
+            }
+        }
+
+        function loadInventory() {
+            // In a real app, this would load from localStorage
+            updateInventory();
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            if (hours > 0) {
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Handle page visibility to pause timers when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && paymentTimer) {
+                // In a real app, you might pause the timer here
+                showNotification("Timer paused - focus required!");
+            }
+        });
+
+        // Initialize when page loads
+        window.addEventListener('load', initVendingMachine);
+    </script>
+</body>
+</html>
