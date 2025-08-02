@@ -13,7 +13,7 @@
 - Member 2: [Karthip S Kurup] - [Mar Baselios Christian College of Engineering & Technology, Kuttikkanam, Peermade]
 
 ### Project Description
-[The game encourages mindfulness and patience by making users "pay" with their time and attention rather than money, creating a unique digital experience that values presence over currenc]
+[The game encourages mindfulness and patience by making users "pay" with their time and attention rather than money, creating a unique digital experience that values presence over currency]
 
 ### The Problem (that doesn't exist)
 [Excess money is the problem of using vending machine.So peoples are not preferring vending machine.]
@@ -28,7 +28,7 @@ For Software:
 - [VS Code]
 
 ### Project Link
-https://virtual-vending-machine-dnuqxggas-karthik-s-kurups-projects.vercel.app/
+https://v0-real-time-age-filter.vercel.app/
 
 # Screenshots (Add at least 3)
 https://drive.google.com/file/d/1LFxN5Ti_-lKXBJ6hUsYJeyxDd-KcPhmf/view?usp=drive_link
