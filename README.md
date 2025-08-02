@@ -1,11 +1,11 @@
 <img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
 
-# [Virtual Vending Machine] 🎯
+# Time Vending Machine 🎯
 
 
 ## Basic Details
-### Team Name: [Alectro Corp]
+### Team Name: Alectro Corp
 
 
 ### Team Members
