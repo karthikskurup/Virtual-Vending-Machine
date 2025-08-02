@@ -31,11 +31,11 @@ For Software:
 https://virtual-vending-machine-dnuqxggas-karthik-s-kurups-projects.vercel.app/
 
 # Screenshots (Add at least 3)
-![Screenshot1]((https://drive.google.com/file/d/1LFxN5Ti_-lKXBJ6hUsYJeyxDd-KcPhmf/view?usp=drive_link))
+https://drive.google.com/file/d/1LFxN5Ti_-lKXBJ6hUsYJeyxDd-KcPhmf/view?usp=drive_link
 
-![Screenshot2](https://drive.google.com/file/d/1sloAz-sP1RLT5TIfrDalhkjaxljx0Qtk/view?usp=drive_link)
+https://drive.google.com/file/d/1sloAz-sP1RLT5TIfrDalhkjaxljx0Qtk/view?usp=drive_link
 
-![Screenshot3](https://drive.google.com/file/d/1pge-w0IquzhaODNTz09Fd-vx2scYS3Rb/view?usp=drive_link)
+https://drive.google.com/file/d/1pge-w0IquzhaODNTz09Fd-vx2scYS3Rb/view?usp=drive_link
 
 ### Project Demo
 # Video
