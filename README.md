@@ -1,97 +1,45 @@
 <img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
 
-# [Project Name] 🎯
+# [Virtual Vending Machine] 🎯
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: [Alectro Corp]
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: [Ganga P Gopan] - [Mar Baselios Christian College of Engineering & Technology, Kuttikkanam, Peermade]
+- Member 2: [Karthip S Kurup] - [Mar Baselios Christian College of Engineering & Technology, Kuttikkanam, Peermade]
 
 ### Project Description
-[2-3 lines about what your project does]
+[The game encourages mindfulness and patience by making users "pay" with their time and attention rather than money, creating a unique digital experience that values presence over currenc]
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+[Excess money is the problem of using vending machine.So peoples are not preferring vending machine.]
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+[We find a solution for this problem by creating a virtual vending machine by our time without the usage of our money]
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
+- [HTML,CSS,REACT]
+- [VS Code]
 
-For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
-
-### Implementation
-For Software:
-# Installation
-[commands]
-
-# Run
-[commands]
-
-### Project Documentation
-For Software:
+### Project Link
+https://virtual-vending-machine-dnuqxggas-karthik-s-kurups-projects.vercel.app/
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot1]((https://drive.google.com/file/d/1LFxN5Ti_-lKXBJ6hUsYJeyxDd-KcPhmf/view?usp=drive_link))
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot2](https://drive.google.com/file/d/1sloAz-sP1RLT5TIfrDalhkjaxljx0Qtk/view?usp=drive_link)
 
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
-
-# Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
-
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
+![Screenshot3](https://drive.google.com/file/d/1pge-w0IquzhaODNTz09Fd-vx2scYS3Rb/view?usp=drive_link)
 
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
-
-# Additional Demos
-[Add any extra demo materials/links]
-
-## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
-
+[ https://drive.google.com/file/d/14GK1hs_atjX9MTLGw3hm0Htky3MgOPVc/view?usp=drive_link ]
 ---
 Made with ❤️ at TinkerHub Useless Projects 
 
